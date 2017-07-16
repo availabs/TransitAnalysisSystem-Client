@@ -1,0 +1,39 @@
+.trainTable > table > thead > tr > th {
+  font-size: 8px;
+}
+
+.trainTable > table > tbody > tr > td {
+  font-size: 8px;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.station line {
+  stroke: #ddd;
+  stroke-dasharray: 1, 1;
+  shape-rendering: crispEdges;
+}
+
+.station text {
+  text-anchor: end;
+}
+
+.train path {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.train circle {
+  stroke: #fff;
+}
