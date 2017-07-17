@@ -32,7 +32,7 @@ export const getDataForDate = date => {
 
     requestedDates[date] = 1
 
-    const start = `${date}%200400`
+    const start = `${date}%200000`
     const end = `${+date}%200800`
 
     fetch(`http://lor.availabs.org:9009/report/${start}/to/${end}`)

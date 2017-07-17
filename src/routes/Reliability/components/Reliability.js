@@ -8,7 +8,7 @@ import { withFauxDOM } from 'react-faux-dom'
 
 class Reliability extends React.Component {
   componentDidMount () {
-    this.props.getDataForDate(20170716)
+    this.props.getDataForDate(20170706)
 
     const controlsDOMElement = this.props.connectFauxDOM('div', 'controls')
 
