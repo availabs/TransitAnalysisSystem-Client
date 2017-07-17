@@ -8,15 +8,6 @@ import { withFauxDOM } from 'react-faux-dom'
 
 class Reliability extends React.Component {
   componentDidMount () {
-    this.props.getDataForDate(20170706)
-
-    const controlsDOMElement = this.props.connectFauxDOM('div', 'controls')
-
-    const {
-      selectDirection,
-      selectLine,
-    } = this.props
-
     const {
       lines,
       directions,
@@ -24,6 +15,15 @@ class Reliability extends React.Component {
       currentLine,
       currentDirection,
     } = this.props.reliability || {}
+
+    this.props.getDataForDate(date)
+
+    const controlsDOMElement = this.props.connectFauxDOM('div', 'controls')
+
+    const {
+      selectDirection,
+      selectLine,
+    } = this.props
 
     Controls({
       domElement: controlsDOMElement,
@@ -56,7 +56,7 @@ class Reliability extends React.Component {
     } = this.props.reliability || {}
 
     if (!trains[date]) {
-      this.props.getDataForDate(20170716)
+      this.props.getDataForDate(date)
       return
     }
 
