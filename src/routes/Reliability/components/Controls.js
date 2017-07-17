@@ -32,12 +32,8 @@ const Controls = ({
     .data(directions)
     .enter()
     .append('option')
-    .attr('value', d => {
-      return d.val
-    })
-    .text(d => {
-      return d.name
-    })
+    .attr('value', d => d.val)
+    .text(d => d.name)
 
   directionControl.on('change', () => {
     selectDirection(d3.select('.dirControl').property('value'))
@@ -59,12 +55,8 @@ const Controls = ({
     .data(lines)
     .enter()
     .append('option')
-    .attr('value', d => {
-      return d
-    })
-    .text(d => {
-      return d
-    })
+    .attr('value', d => d)
+    .text(d => d)
 
   lineControl.on('change', () => {
     selectLine(d3.select('.trainControl').property('value'))

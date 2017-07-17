@@ -13,7 +13,6 @@ export const NOOP = 'NOOP'
 
 const requestedDates = {}
 
-
 export const selectLine = line => ({
   type: LINE_SELECT,
   payload: line
@@ -102,21 +101,24 @@ const ACTION_HANDLERS = {
       fourTrain: schedule.filter(d => d.route_id.match(/4/))
     }
 
-    const {
-      currentDirection,
-      currentLine,
-    } = state
-
     newState.trains[date] = trains
-
-    const formattedInput = formatInput(trains, currentLine, currentDirection)
 
     return newState
   },
-  [LINE_SELECT]: (state, action) =>
-    Object.assign({}, state, { currentLine: action.payload }),
-  [DIRECTION_SELECT]: (state, action) =>
-    Object.assign({}, state, { currentDirection: action.payload }),
+
+  [DIRECTION_SELECT]: (state, action) => {
+    console.log(action)
+    const newState = Object.assign({}, state)
+    newState.currentDirection = action.payload
+    return newState
+  },
+
+  [LINE_SELECT]: (state, action) => {
+    console.log(action)
+    const newState = Object.assign({}, state)
+    newState.currentLine = action.payload
+    return newState
+  },
 
   [NOOP]: (state) => state,
 }
@@ -133,7 +135,7 @@ const initialState = {
     { val: 'N', name: 'Uptown' },
     { val: 'S', name: 'Downtown' }
   ],
-  lines: [4, 5, 6]
+  lines: ['fourTrain', 'fiveTrain', 'sixTrain']
 }
 
 export default function reliabilityReducer (state = initialState, action) {

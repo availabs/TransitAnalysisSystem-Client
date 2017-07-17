@@ -1,5 +1,5 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import Controls from './Controls'
 import MareySchedule from '../../../components/MareySchedule'
 import formatInput from '../modules/formatInput'
@@ -38,12 +38,16 @@ class Reliability extends React.Component {
   }
 
   shouldComponentUpdate (nextProps) {
-    return Object.keys(nextProps).some(k => (this.props[k] !== nextProps[k]))
+    let shouldUpdate = Object.keys(nextProps.reliability).some(
+      k => (this.props.reliability[k] !== nextProps.reliability[k]
+    ))
+
+    shouldUpdate = shouldUpdate || (this.props.mareySchedule !== nextProps.mareySchedule)
+
+    return shouldUpdate
   }
 
-  componentDidUpdate () {
-    const mareyDOMElement = this.props.connectFauxDOM('div', 'mareySchedule')
-
+  componentDidUpdate (prevProps) {
     const {
       date,
       trains,
@@ -56,13 +60,21 @@ class Reliability extends React.Component {
       return
     }
 
-    console.log('componentDidUpdate')
-
     const {
       tripList,
       tripTable,
       stopTemplate
     } = formatInput(trains[date], currentLine, currentDirection)
+
+    let needNewViz = Object.keys(prevProps.reliability).some(
+      k => (this.props.reliability[k] !== prevProps.reliability[k]
+    ))
+
+    if (!needNewViz) {
+      return
+    }
+
+    const mareyDOMElement = this.props.connectFauxDOM('div', 'mareySchedule', true)
 
     MareySchedule({
       domElement: mareyDOMElement,
@@ -86,22 +98,14 @@ class Reliability extends React.Component {
   }
 }
 
-        // <Controls
-          // date={date}
-          // lines={lines}
-          // directions={directions}
-          // currentLine={currentLine}
-          // currentDirection={currentDirection}
-        // />
-
-
-//
-// < ReliabilityTable({ tripList, tripTable, stopTemplate }) />
-
-// Counter.propTypes = {
-// counter: PropTypes.number.isRequired,
-// increment: PropTypes.func.isRequired,
-// doubleAsync: PropTypes.func.isRequired
-// };
+Reliability.propTypes = {
+  selectDirection: PropTypes.func.isRequired,
+  selectLine: PropTypes.func.isRequired,
+  getDataForDate: PropTypes.func.isRequired,
+  reliability: PropTypes.object.isRequired,
+  connectFauxDOM: PropTypes.func.isRequired,
+  controls: PropTypes.object,
+  mareySchedule: PropTypes.object,
+}
 
 export default withFauxDOM(Reliability)
