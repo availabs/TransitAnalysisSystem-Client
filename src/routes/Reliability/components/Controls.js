@@ -15,25 +15,19 @@ const Controls = ({
   if (!(directions && lines)) {
     return <div>Loading</div>
   }
-  const directionControlStr = `
-      <span class="directionControl">
-        <span>Direction</span>
-      </span>
-      `
-
-  const lineControlStr = `
-      <span class="lineControl">
-        <span>Line</span>
-      </span>
-    `
 
   var directionControl = d3
     .select(domElement)
-    .html(directionControlStr)
-    .append('select')
-    .attr('class', 'dirControl')
+    .append('span')
+    .attr('class', 'directionControl')
 
   directionControl
+    .append('span')
+    .text('Direction')
+
+  directionControl
+    .append('select')
+    .attr('class', 'dirControl')
     .selectAll('option')
     .data(directions)
     .enter()
@@ -51,11 +45,16 @@ const Controls = ({
 
   var lineControl = d3
     .select(domElement)
-    .html(lineControlStr)
-    .append('select')
-    .attr('class', 'trainControl')
+    .append('span')
+    .attr('class', 'lineControl')
 
   lineControl
+    .append('span')
+    .text('Line')
+
+  lineControl
+    .append('select')
+    .attr('class', 'trainControl')
     .selectAll('option')
     .data(lines)
     .enter()

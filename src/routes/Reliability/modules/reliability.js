@@ -9,6 +9,10 @@ import formatInput from './formatInput'
 export const LINE_SELECT = 'LINE_SELECT'
 export const DIRECTION_SELECT = 'DIRECTION_SELECT'
 export const DATA_RECEIVED = 'DATA_RECEIVED'
+export const NOOP = 'NOOP'
+
+const requestedDates = {}
+
 
 export const selectLine = line => ({
   type: LINE_SELECT,
@@ -21,9 +25,16 @@ export const selectDirection = direction => ({
 })
 
 export const getDataForDate = date => {
+
   return (dispatch, getState) => {
-    const start = `${date}%200000`
-    const end = `${+date}%200300`
+    if (requestedDates[date]) {
+      dispatch({ type: NOOP })
+    }
+
+    requestedDates[date] = 1
+
+    const start = `${date}%200400`
+    const end = `${+date}%200800`
 
     fetch(`http://lor.availabs.org:9009/report/${start}/to/${end}`)
       .then(function (d) {
@@ -56,31 +67,10 @@ export const getDataForDate = date => {
           (a, b) => b.gtfsrt_msg_timestamp - a.gtfsrt_msg_timestamp
         )
 
-        var trains = {
-          sixTrain: schedule.filter(d => d.route_id.match(/6/)),
-          fiveTrain: schedule.filter(d => d.route_id.match(/5/)),
-          fourTrain: schedule.filter(d => d.route_id.match(/4/))
-        }
-
-        var lines = Object.keys(trains)
-
-        var activeLine = lines[0]
-
-        // console.log('activeLine', activeLine)
-
-        // var directions = [
-          // { val: 'N', name: 'Uptown' },
-          // { val: 'S', name: 'Downtown' }
-        // ]
-
-        var currentDirection = 'N'
-
-        const formattedInput = formatInput(trains, activeLine, currentDirection)
-
         dispatch({
           type: DATA_RECEIVED,
           payload: {
-            [date]: formattedInput
+            [date]: schedule
           }
         })
       })
@@ -101,14 +91,34 @@ const ACTION_HANDLERS = {
   [DATA_RECEIVED]: (state, action) => {
     const newState = Object.assign({}, state)
     const date = Object.keys(action.payload)[0]
+
     newState.date = date
-    newState.data[date] = action.payload[date]
+
+    const schedule = action.payload[date]
+
+    const trains = {
+      sixTrain: schedule.filter(d => d.route_id.match(/6/)),
+      fiveTrain: schedule.filter(d => d.route_id.match(/5/)),
+      fourTrain: schedule.filter(d => d.route_id.match(/4/))
+    }
+
+    const {
+      currentDirection,
+      currentLine,
+    } = state
+
+    newState.trains[date] = trains
+
+    const formattedInput = formatInput(trains, currentLine, currentDirection)
+
     return newState
   },
   [LINE_SELECT]: (state, action) =>
     Object.assign({}, state, { currentLine: action.payload }),
   [DIRECTION_SELECT]: (state, action) =>
-    Object.assign({}, state, { currentDirection: action.payload })
+    Object.assign({}, state, { currentDirection: action.payload }),
+
+  [NOOP]: (state) => state,
 }
 
 // ------------------------------------
@@ -116,10 +126,13 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 const initialState = {
   currentDirection: 'N',
-  currentLine: 6,
-  data: {},
+  currentLine: 'sixTrain',
+  trains: {},
   date: 20170716,
-  directions: ['N', 'S'],
+  directions: [
+    { val: 'N', name: 'Uptown' },
+    { val: 'S', name: 'Downtown' }
+  ],
   lines: [4, 5, 6]
 }
 

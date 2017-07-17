@@ -5,7 +5,7 @@ const margin = { top: 20, right: 30, bottom: 20, left: 150 }
 
 const MareySchedule = ({ domElement, tripList, tripTable, stopTemplate }) => {
 
-  console.log('========== MareySchedule Start ==========')
+  console.log('========== MareySchedule BEGIN ==========')
   if (!(tripList && tripTable && stopTemplate)) {
     return <div>LOADING</div>
   }
@@ -192,7 +192,7 @@ const MareySchedule = ({ domElement, tripList, tripTable, stopTemplate }) => {
       return d.timeDiff ? z(d.timeDiff) : '#ddd'
     })
 
-  console.log('========== MareySchedule Done ==========')
+  console.log('========== MareySchedule END ==========')
 }
 
 // MareySchedule.propTypes = {

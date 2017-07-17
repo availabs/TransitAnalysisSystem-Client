@@ -2,36 +2,70 @@ import React from 'react'
 // import PropTypes from 'prop-types'
 import Controls from './Controls'
 import MareySchedule from '../../../components/MareySchedule'
+import formatInput from '../modules/formatInput'
 // import ReliabilityTable from '../../../components/ReliabilityTable'
 import { withFauxDOM } from 'react-faux-dom'
 
 class Reliability extends React.Component {
   componentDidMount () {
     this.props.getDataForDate(20170716)
-  }
 
-  componentDidUpdate () {
-    const domElement = this.props.connectFauxDOM('div', 'mareySchedule')
+    const controlsDOMElement = this.props.connectFauxDOM('div', 'controls')
+
+    const {
+      selectDirection,
+      selectLine,
+    } = this.props
+
     const {
       lines,
       directions,
       date,
-      data,
       currentLine,
       currentDirection,
     } = this.props.reliability || {}
+
+    Controls({
+      domElement: controlsDOMElement,
+      directions,
+      lines,
+      date,
+      selectDirection,
+      currentLine,
+      currentDirection,
+      selectLine
+    })
+  }
+
+  shouldComponentUpdate (nextProps) {
+    return Object.keys(nextProps).some(k => (this.props[k] !== nextProps[k]))
+  }
+
+  componentDidUpdate () {
+    const mareyDOMElement = this.props.connectFauxDOM('div', 'mareySchedule')
+
+    const {
+      date,
+      trains,
+      currentLine,
+      currentDirection,
+    } = this.props.reliability || {}
+
+    if (!trains[date]) {
+      this.props.getDataForDate(20170716)
+      return
+    }
+
+    console.log('componentDidUpdate')
 
     const {
       tripList,
       tripTable,
       stopTemplate
-    } = (data && data[date]) || {}
-
-
-    console.log('componentDidUpdate')
+    } = formatInput(trains[date], currentLine, currentDirection)
 
     MareySchedule({
-      domElement,
+      domElement: mareyDOMElement,
       tripList,
       tripTable,
       stopTemplate,
@@ -39,25 +73,14 @@ class Reliability extends React.Component {
   }
 
   render () {
-    // const {
-      // lines,
-      // directions,
-      // date,
-      // data,
-      // currentLine,
-      // currentDirection,
-    // } = this.props.reliability || {}
-
-    // const {
-      // tripList,
-      // tripTable,
-      // stopTemplate
-    // } = (data && data[date]) || {}
-
-    console.log('RENDER')
     return (
       <div>
-        {this.props.mareySchedule || 'LOADING'}
+        <div>
+          {this.props.controls}
+        </div>
+        <div>
+          {this.props.mareySchedule || 'LOADING'}
+        </div>
       </div>
     )
   }
